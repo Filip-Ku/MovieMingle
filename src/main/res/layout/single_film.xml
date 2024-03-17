@@ -6,16 +6,36 @@
     android:layout_height="150dp"
     android:orientation="vertical"
     android:background="@color/black">
-<TextView
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:text="@string/line"
+        android:textColor="@color/white"
+        android:textSize="10dp"/>
+<LinearLayout
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="140dp">
+
+    <ImageView
+        android:id="@+id/poster"
+        android:layout_width="100dp"
+        android:layout_height="135dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"
+        />
+
+<LinearLayout
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:text="-----------------------------------------------------------------------"
-    android:textColor="@color/white"
-    android:textSize="20dp"/>
+    android:layout_marginTop="10dp">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="150dp"
+        android:layout_marginStart="25dp"
         >
     <TextView
         android:id="@+id/textView"
@@ -29,19 +49,20 @@
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="8dp"
             android:fontFamily="@font/interlight"
             android:text="ActualTitle"
             android:textColor="@color/white"
-            android:textSize="16dp" />
+            android:textSize="16dp"
+            android:layout_marginTop="5dp"/>
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="150dp">
+        android:layout_marginStart="25dp">
     <TextView
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
@@ -65,7 +86,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="150dp">
+        android:layout_marginStart="25dp">
     <TextView
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
@@ -90,7 +111,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="150dp">
+        android:layout_marginStart="25dp">
     <TextView
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
@@ -111,6 +132,7 @@
         android:textColor="@color/white"
         android:textSize="16dp" />
 
+    </LinearLayout>
 </LinearLayout>
-
+</LinearLayout>
 </LinearLayout>

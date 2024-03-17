@@ -9,7 +9,7 @@
             android:icon="@drawable/ic_film"
             android:title="@string/menu_home" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_series"
             android:icon="@drawable/series"
             android:title="@string/menu_gallery" />
         <item
@@ -17,7 +17,7 @@
             android:icon="@drawable/ic_favourite"
             android:title="@string/menu_slideshow" />
         <item
-            android:id="@+id/nav_series"
+            android:id="@+id/nav_gallery"
             android:icon="@drawable/ic_watch_later"
             android:title="@string/menu_series" />
     </group>

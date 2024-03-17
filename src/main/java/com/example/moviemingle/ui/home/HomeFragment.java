@@ -41,7 +41,7 @@ public class HomeFragment extends Fragment {
     private FilmAdapter adapter;
 
     String[] filmy = {"The+Shawshank+Redemption", "The+Godfather", "The+Godfather:+Part+II", "The+Dark+Knight", "12+Angry+Men", "Schindler's+List", "The+Lord+of+the+Rings:+The+Return+of+the+King", "Pulp+Fiction", "The+Good,+the+Bad+and+the+Ugly", "Fight+Club", "Forrest+Gump", "Inception", "The+Lord+of+the+Rings:+The+Fellowship+of+the+Ring", "Star+Wars:+Episode+V+-+The+Empire+Strikes+Back", "The+Lord+of+the+Rings:+The+Two+Towers", "The+Matrix", "Goodfellas", "One+Flew+Over+the+Cuckoo's+Nest", "Seven+Samurai", "Se7en", "Life+Is+Beautiful", "City+of+God", "The+Silence+of+the+Lambs", "It's+a+Wonderful+Life", "Star+Wars:+Episode+IV+-+A+New+Hope", "Saving+Private+Ryan", "Spirited+Away", "The+Green+Mile", "Interstellar", "Parasite", "Léon:+The+Professional", "The+Usual+Suspects", "Harakiri", "The+Lion+King", "The+Pianist", "Back+to+the+Future", "Terminator+2:+Judgment+Day", "American+History+X", "Modern+Times", "Psycho", "Gladiator", "City+Lights", "The+Departed", "The+Intouchables", "Whiplash", "The+Prestige", "The+Lives+of+Others", "Grave+of+the+Fireflies", "Once+Upon+a+Time+in+the+West", "Cinema+Paradiso", "Alien", "Apocalypse+Now", "Memento", "The+Great+Dictator", "The+Sting", "The+Apartment", "The+Father", "Coco", "Sunset+Boulevard", "Spider-Man:+Into+the+Spider-Verse", "Hamilton", "Django+Unchained", "The+Dark+Knight+Rises", "1917", "The+Shining", "Avengers:+Infinity+War", "Avengers:+Endgame", "The+Hunt", "The+Bridge+on+the+River+Kwai", "Jurassic+Park", "Inglourious+Basterds", "Requiem+for+a+Dream", "Eternal+Sunshine+of+the+Spotless+Mind", "Toy+Story", "Toy+Story+3", "Reservoir+Dogs", "Amélie", "Das+Boot", "Star+Wars:+Episode+VI+-+Return+of+the+Jedi", "Das+Leben+der+Anderen", "Indiana+Jones+and+the+Raiders+of+the+Lost+Ark", "Aliens", "A+Clockwork+Orange", "WALL·E", "The+Treasure+of+the+Sierra+Madre", "A+Beautiful+Mind", "Vertigo", "North+by+Northwest", "Your+Name", "The+Seventh+Seal", "The+Third+Man", "On+the+Waterfront", "The+Gold+Rush", "The+Maltese+Falcon", "The+Bridge+on+the+River+Kwai", "Rashomon", "The+Wizard+of+Oz", "The+Truman+Show", "Amadeus"};
-
+    Set<String> wylosowaneTytuly = new HashSet<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -59,7 +59,6 @@ public class HomeFragment extends Fragment {
 
     private void loadFilms() {
         Random rand = new Random();
-        Set<String> wylosowaneTytuly = new HashSet<>();
 
         while (wylosowaneTytuly.size() < 10) {
             int index = rand.nextInt(filmy.length);
@@ -101,4 +100,18 @@ public class HomeFragment extends Fragment {
         adapter = new FilmAdapter(filmList);
         recyclerView.setAdapter(adapter);
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (adapter != null) {
+            adapter = null;
+        }
+
+        if (wylosowaneTytuly != null) {
+            wylosowaneTytuly.clear();
+        }
+    }
 }
+
+

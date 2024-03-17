@@ -5,12 +5,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moviemingle.R;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -53,9 +55,11 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         public TextView directorTextView;
         public TextView timeTextView;
 
+        public ImageView posterImageView;
+
         public ViewHolder(View itemView) {
             super(itemView);
-
+            posterImageView = itemView.findViewById(R.id.poster);
             titleTextView = itemView.findViewById(R.id.title);
             yearTextView = itemView.findViewById(R.id.year);
             directorTextView = itemView.findViewById(R.id.director);
@@ -68,13 +72,21 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
             yearTextView.setText(film.getYear());
             timeTextView.setText(film.getTime());
 
+            String firstDirector ="";
+            Picasso.get().load(film.getPoster()).into(posterImageView);
+
             String directors = film.getDirector();
+            if(directors!= null && directors.contains(",")){
+                String[] directorArray = directors.split(",");
 
-            String[] directorArray = directors.split(",");
 
-            String firstDirector = "";
-            if (directorArray.length > 0) {
-                firstDirector = directorArray[0].trim();
+                if (directorArray.length > 0) {
+                    firstDirector = directorArray[0].trim();
+                }
+            }else if(directors!= null && directors.contains(",")==false){
+                firstDirector=directors;
+            } else {
+                firstDirector="";
             }
 
 
