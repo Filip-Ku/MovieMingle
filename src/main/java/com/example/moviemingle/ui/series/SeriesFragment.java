@@ -1,5 +1,6 @@
 package com.example.moviemingle.ui.series;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,7 @@ import com.example.moviemingle.databinding.FragmentHomeBinding;
 import com.example.moviemingle.ui.Film;
 import com.example.moviemingle.ui.FilmAdapter;
 import com.example.moviemingle.ui.JsonPlaceholderAPI;
+import com.example.moviemingle.ui.Poster;
 import com.example.moviemingle.ui.SearchResult;
 
 import java.util.ArrayList;
@@ -188,6 +190,15 @@ public class SeriesFragment extends Fragment {
 
     private void updateRecyclerView() {
         adapter = new FilmAdapter(serialList);
+        adapter.setOnPosterClickListener(new FilmAdapter.OnPosterClickListener() {
+            @Override
+            public void onPosterClick(int position) {
+                Film clickedFilm = serialList.get(position);
+                Intent intent = new Intent(getContext(), Poster.class);
+                intent.putExtra("posterUrl", clickedFilm.getPoster());
+                startActivity(intent);
+            }
+        });
         recyclerView.setAdapter(adapter);
     }
 
