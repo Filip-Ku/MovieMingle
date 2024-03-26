@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -17,6 +19,7 @@ import com.example.moviemingle.databinding.FragmentHomeBinding;
 import com.example.moviemingle.ui.Film;
 import com.example.moviemingle.ui.FilmAdapter;
 import com.example.moviemingle.ui.JsonPlaceholderAPI;
+import com.example.moviemingle.ui.SearchResult;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -39,6 +42,10 @@ public class SeriesFragment extends Fragment {
 
     private FilmAdapter adapter;
 
+    private EditText finder;
+
+    private ImageView search;
+
     String[] seriale = {
             "The+Wire","Mad+Men", "Breaking+Bad","Fleabag","Game+of+Thrones","I+May+Destroy+You","The+Leftovers","The+Americans","Succession", "BoJack+Horseman",
             "Six+Feet+Under","Twin+Peaks", "Atlanta","Chernobyl","The+Crown", "30+Rock","Deadwood", "Lost", "The+Thick+of+It","Curb+Your+Enthusiasm", "Black+Mirror",
@@ -57,14 +64,87 @@ public class SeriesFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-        recyclerView = root.findViewById(R.id.bestFilms);
+        View root = inflater.inflate(R.layout.fragment_series, container, false);
+        recyclerView = root.findViewById(R.id.bestSeries);
         serialList = new ArrayList<>();
+        finder = root.findViewById(R.id.finder);
         recyclerView.setAdapter(new FilmAdapter(new ArrayList<>()));
-
+        search = (ImageView) root.findViewById(R.id.search);
+        search.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                searchSeries();
+            }
+        });
         loadSeries();
 
         return root;
+    }
+
+    private void searchSeries() {
+        String phrase;
+        serialList.clear();
+        phrase = finder.getText().toString();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://www.omdbapi.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        JsonPlaceholderAPI jsonPlaceholderAPI = retrofit.create(JsonPlaceholderAPI.class);
+        Call<SearchResult> call = jsonPlaceholderAPI.searchProduction("7e8698f5", phrase, "series", 10, "imdbRating", "desc");
+        call.enqueue(new Callback<SearchResult>() {
+            @Override
+            public void onResponse(Call<SearchResult> call, Response<SearchResult> response) {
+                if (response.isSuccessful()) {
+                    SearchResult result = response.body();
+                    Log.e("HomeFragment", response.body().toString());
+                    if (result != null && result.getSearch() != null) {
+                        for (Film film : result.getSearch()) {
+                            searchExactInfoSeries(film.getTitle());
+                        }
+                        updateRecyclerView();
+                    } else {
+                        Log.e("HomeFragment", "No series found for: " + phrase);
+                    }
+                } else {
+                    Log.e("HomeFragment", "Failed to fetch series: " + phrase);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<SearchResult> call, Throwable t) {
+                Log.e("HomeFragment", "Error: " + t.getMessage());
+            }
+        });
+    }
+
+    private void searchExactInfoSeries(String tytul) {
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://www.omdbapi.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        JsonPlaceholderAPI jsonPlaceholderAPI = retrofit.create(JsonPlaceholderAPI.class);
+        Call<Film> call = jsonPlaceholderAPI.getFilm("7e8698f5", tytul);
+        Log.d("URL", "URL: " + call.request().url().toString());
+        call.enqueue(new Callback<Film>() {
+            @Override
+            public void onResponse(Call<Film> call, Response<Film> response) {
+                if (response.isSuccessful()) {
+                    Film film = response.body();
+                    serialList.add(film);
+                    if (serialList.size() <= 10) {
+                        updateRecyclerView();
+                    }
+                } else {
+                    Log.e("HomeFragment", "Film not found: " + tytul);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Film> call, Throwable t) {
+                Log.e("HomeFragment", "Error: " + t.getMessage());
+            }
+        });
     }
 
     private void loadSeries() {
@@ -83,7 +163,7 @@ public class SeriesFragment extends Fragment {
 
             JsonPlaceholderAPI jsonPlaceholderAPI = retrofit.create(JsonPlaceholderAPI.class);
             Call<Film> call = jsonPlaceholderAPI.getFilm("7e8698f5", tytul);
-            Log.d("URL", "URL: " + call.request().url().toString());
+            Log.d("URL SERIES", "URL: " + call.request().url().toString());
             call.enqueue(new Callback<Film>() {
                 @Override
                 public void onResponse(Call<Film> call, Response<Film> response) {
