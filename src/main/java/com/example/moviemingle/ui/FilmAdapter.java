@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moviemingle.R;
+import com.example.moviemingle.ui.home.HomeFragment;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
@@ -55,6 +56,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         public TextView directorTextView;
         public TextView timeTextView;
 
+
         public ImageView posterImageView;
 
         public ViewHolder(View itemView) {
@@ -64,33 +66,54 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
             yearTextView = itemView.findViewById(R.id.year);
             directorTextView = itemView.findViewById(R.id.director);
             timeTextView = itemView.findViewById(R.id.runtime);
+
         }
 
         public void bind(Film film) {
-            Log.d("MessagesAdapter", "Binding message: " + film.getTitle());
             titleTextView.setText(film.getTitle());
             yearTextView.setText(film.getYear());
-            timeTextView.setText(film.getTime());
-
-            String firstDirector ="";
-            Picasso.get().load(film.getPoster()).into(posterImageView);
-
-            String directors = film.getDirector();
-            if(directors!= null && directors.contains(",")){
-                String[] directorArray = directors.split(",");
-
-
-                if (directorArray.length > 0) {
-                    firstDirector = directorArray[0].trim();
-                }
-            }else if(directors!= null && directors.contains(",")==false){
-                firstDirector=directors;
+            if(film.getTime()!=null){
+                timeTextView.setText(film.getTime());
             } else {
-                firstDirector="";
+                timeTextView.setText("Nie znaleziono");
             }
 
+            String firstDirector ="";
+                if(film.getPoster().equals("N/A")) {
+                   Picasso.get().load("https://i.imgur.com/zYUBMnP.png").resize(100, 135)  .centerCrop().into(posterImageView);
+                } else {
+                    Picasso.get().load(film.getPoster()).into(posterImageView);
+                }
 
-            directorTextView.setText(firstDirector);
-        }
+
+            String directors = film.getDirector();
+            String writers = film.getWriter();
+            if(directors!=null) {
+                if (directors.equals("N/A")) {
+                    if (writers != null && !writers.isEmpty()) {
+                        if (writers.contains(",")) {
+                            String[] writerArray = writers.split(",");
+                            if (writerArray.length > 0) {
+                                firstDirector = writerArray[0].trim();
+                            }
+                        } else {
+                            firstDirector = writers.trim();
+                        }
+                    }
+                } else {
+                    if (directors.contains(",")) {
+                        String[] directorArray = directors.split(",");
+                        if (directorArray.length > 0) {
+                            firstDirector = directorArray[0].trim();
+                        }
+                    } else {
+                        firstDirector = directors.trim();
+                    }
+                }
+
+                directorTextView.setText(firstDirector);
+            } else {
+                directorTextView.setText("Nie znaleziono");
+            }
     }
-}
+}}

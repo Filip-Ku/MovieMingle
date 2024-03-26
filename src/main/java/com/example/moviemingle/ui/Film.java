@@ -10,13 +10,15 @@ public class Film {
 
     private String Poster;
 
-    private Film(String Title,String Year,String Time,String Director,String Response,String Poster){
+    private String Writer;
+    private Film(String Title,String Year,String Time,String Director,String Response,String Poster,String Writer){
         this.Director=Director;
         this.Runtime=Time;
         this.Year=Year;
         this.Title=Title;
         this.Response=Response;
         this.Poster=Poster;
+        this.Writer=Writer;
     }
 
     public String getDirector() {
@@ -37,7 +39,7 @@ public class Film {
 
     public String getPoster(){ return Poster; }
 
-    public String getResponse() {
-        return Response;
-    }
+    public String getWriter(){return Writer;}
+
+    public String getResponse(){return Response;}
 }
