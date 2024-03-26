@@ -23,6 +23,8 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         this.films = films;
     }
 
+    private OnPosterClickListener onPosterClickListener;
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -30,19 +32,33 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         return new ViewHolder(view);
     }
 
-    public void updateData(List<Film> newMessages) {
-        films.clear();
-        films.addAll(newMessages);
-        notifyDataSetChanged();
+    public void setOnPosterClickListener(OnPosterClickListener listener) {
+        this.onPosterClickListener = listener;
     }
+
+    public interface OnPosterClickListener {
+        void onPosterClick(int position);
+    }
+
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Film film = films.get(position);
-        Log.d("FilmAdapter", "Binding message: " + film.getTitle());
         holder.bind(film);
+
+        holder.posterImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onPosterClick(position);
+            }
+        });
     }
 
+    public void onPosterClick(int position) {
+        if (onPosterClickListener != null) {
+            onPosterClickListener.onPosterClick(position);
+        }
+    }
 
 
     @Override
@@ -79,11 +95,11 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
             }
 
             String firstDirector ="";
-                if(film.getPoster().equals("N/A")) {
-                   Picasso.get().load("https://i.imgur.com/zYUBMnP.png").resize(100, 135)  .centerCrop().into(posterImageView);
-                } else {
-                    Picasso.get().load(film.getPoster()).into(posterImageView);
-                }
+            if(film.getPoster() == null || film.getPoster().equals("N/A")) {
+                Picasso.get().load("https://i.imgur.com/zYUBMnP.png").resize(100, 135).centerCrop().into(posterImageView);
+            } else {
+                Picasso.get().load(film.getPoster()).into(posterImageView);
+            }
 
 
             String directors = film.getDirector();
