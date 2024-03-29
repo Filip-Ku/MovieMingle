@@ -19,6 +19,7 @@ import com.example.moviemingle.R;
 import com.example.moviemingle.databinding.FragmentHomeBinding;
 import com.example.moviemingle.ui.Film;
 import com.example.moviemingle.ui.FilmAdapter;
+import com.example.moviemingle.ui.FilmInfo;
 import com.example.moviemingle.ui.JsonPlaceholderAPI;
 import com.example.moviemingle.ui.Poster;
 import com.example.moviemingle.ui.SearchResult;
@@ -196,6 +197,16 @@ public class SeriesFragment extends Fragment {
                 Film clickedFilm = serialList.get(position);
                 Intent intent = new Intent(getContext(), Poster.class);
                 intent.putExtra("posterUrl", clickedFilm.getPoster());
+                startActivity(intent);
+            }
+        });
+
+        adapter.setOnItemClickListener(new FilmAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Film clickedFilm = serialList.get(position);
+                Intent intent = new Intent(getContext(), FilmInfo.class);
+                intent.putExtra("filmInfo", clickedFilm.getTitle());
                 startActivity(intent);
             }
         });

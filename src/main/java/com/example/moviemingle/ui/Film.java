@@ -11,7 +11,30 @@ public class Film {
     private String Poster;
 
     private String Writer;
-    private Film(String Title,String Year,String Time,String Director,String Response,String Poster,String Writer){
+
+    private String Released;
+    private String Genre;
+
+    private String Actors;
+    private String Plot;
+
+    public String getReleased() {
+        return Released;
+    }
+
+    public String getGenre() {
+        return Genre;
+    }
+
+    public String getActors() {
+        return Actors;
+    }
+
+    public String getPlot() {
+        return Plot;
+    }
+
+    private Film(String Title, String Year, String Time, String Director, String Response, String Poster, String Writer, String Released, String Genre, String Actors, String Plot){
         this.Director=Director;
         this.Runtime=Time;
         this.Year=Year;
@@ -19,6 +42,10 @@ public class Film {
         this.Response=Response;
         this.Poster=Poster;
         this.Writer=Writer;
+        this.Released=Released;
+        this.Genre=Genre;
+        this.Actors=Actors;
+        this.Plot=Plot;
     }
 
     public String getDirector() {
