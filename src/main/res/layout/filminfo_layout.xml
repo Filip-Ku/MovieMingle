@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.FilmInfo">
+
+    <ImageView
+        android:id="@+id/posterImageView"
+        android:layout_width="413dp"
+        android:layout_height="729dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="65dp"
+        android:layout_height="53dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="10dp"
+        android:layout_marginRight="10dp"
+        android:clickable="true"
+        android:onClick="turnOff"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="460dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="@+id/posterImageView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:background="@color/black_transparent_10">
+
+
+        <TextView
+            android:id="@+id/titleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/interbold"
+            android:text="ActualTitle"
+            android:textColor="@color/white"
+            android:textSize="30dp"
+            tools:layout_editor_absoluteX="25dp"
+            tools:layout_editor_absoluteY="16dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:id="@+id/runtimeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/interbold"
+            android:text="Runtime"
+            android:textColor="@color/white"
+            android:textSize="24dp"
+            tools:layout_editor_absoluteX="273dp"
+            tools:layout_editor_absoluteY="26dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"/>
+
+        <TextView
+            android:id="@+id/plotTextView"
+            android:layout_width="360dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/interegular"
+            android:text="Plot:"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="25dp"
+            tools:layout_editor_absoluteY="67dp"
+            android:layout_marginLeft="20dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/interbold"
+            android:text="Director:"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="147dp" />
+
+        <TextView
+            android:id="@+id/directorTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/interegular"
+            android:text="Director:"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="115dp"
+            tools:layout_editor_absoluteY="147dp"
+            android:layout_marginLeft="30dp"/>
+        </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/interbold"
+            android:text="Writer:"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="177dp" />
+
+        <TextView
+            android:id="@+id/writerTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/interegular"
+            android:text="Writer:"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="115dp"
+            tools:layout_editor_absoluteY="177dp"
+            android:layout_marginLeft="45dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/interbold"
+            android:text="Genre:"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="207dp" />
+
+        <TextView
+            android:id="@+id/genreTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/interegular"
+            android:text="Genre:"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="115dp"
+            tools:layout_editor_absoluteY="207dp"
+            android:layout_marginLeft="47dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/interbold"
+            android:text="Year:"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="237dp" />
+
+        <TextView
+            android:id="@+id/yearTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/interegular"
+            android:text="year"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="115dp"
+            tools:layout_editor_absoluteY="237dp"
+            android:layout_marginLeft="58dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/interbold"
+            android:text="Released:"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="267dp" />
+
+        <TextView
+            android:id="@+id/productionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/interegular"
+            android:text="production"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="115dp"
+            tools:layout_editor_absoluteY="267dp"
+            android:layout_marginLeft="20dp"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="10dp">
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/interbold"
+            android:text="Actors:"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="16dp"
+            tools:layout_editor_absoluteY="297dp" />
+
+        <TextView
+            android:id="@+id/actorsTextView"
+            android:layout_width="240dp"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/interegular"
+            android:text="actors"
+            android:textColor="@color/white"
+            android:textSize="16dp"
+            tools:layout_editor_absoluteX="115dp"
+            tools:layout_editor_absoluteY="297dp"
+            android:layout_marginLeft="40dp"/>
+    </LinearLayout>
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

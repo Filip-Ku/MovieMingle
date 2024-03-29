@@ -2,7 +2,6 @@ package com.example.moviemingle.ui.home;
 
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,13 +9,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.moviemingle.ui.FilmInfo;
 import com.example.moviemingle.R;
 import com.example.moviemingle.databinding.FragmentHomeBinding;
 import com.example.moviemingle.ui.Film;
@@ -201,12 +199,23 @@ public class HomeFragment extends Fragment {
 
     private void updateRecyclerView() {
         adapter = new FilmAdapter(filmList);
+
         adapter.setOnPosterClickListener(new FilmAdapter.OnPosterClickListener() {
             @Override
             public void onPosterClick(int position) {
                 Film clickedFilm = filmList.get(position);
                 Intent intent = new Intent(getContext(), Poster.class);
                 intent.putExtra("posterUrl", clickedFilm.getPoster());
+                startActivity(intent);
+            }
+        });
+
+        adapter.setOnItemClickListener(new FilmAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                Film clickedFilm = filmList.get(position);
+                Intent intent = new Intent(getContext(), FilmInfo.class);
+                intent.putExtra("filmInfo", clickedFilm.getTitle());
                 startActivity(intent);
             }
         });

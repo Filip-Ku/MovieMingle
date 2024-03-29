@@ -25,6 +25,8 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
 
     private OnPosterClickListener onPosterClickListener;
 
+    private OnItemClickListener onItemClickListener;
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -34,6 +36,14 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
 
     public void setOnPosterClickListener(OnPosterClickListener listener) {
         this.onPosterClickListener = listener;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.onItemClickListener = listener;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
     }
 
     public interface OnPosterClickListener {
@@ -52,6 +62,16 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
                 onPosterClick(position);
             }
         });
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onItemClick(position);
+                }
+            }
+        });
+
     }
 
     public void onPosterClick(int position) {
