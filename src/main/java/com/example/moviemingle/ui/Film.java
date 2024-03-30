@@ -18,6 +18,8 @@ public class Film {
     private String Actors;
     private String Plot;
 
+    private String Awards;
+
     public String getReleased() {
         return Released;
     }
@@ -34,7 +36,7 @@ public class Film {
         return Plot;
     }
 
-    private Film(String Title, String Year, String Time, String Director, String Response, String Poster, String Writer, String Released, String Genre, String Actors, String Plot){
+    private Film(String Title, String Year, String Time, String Director, String Response, String Poster, String Writer, String Released, String Genre, String Actors, String Plot,String Awards){
         this.Director=Director;
         this.Runtime=Time;
         this.Year=Year;
@@ -46,6 +48,7 @@ public class Film {
         this.Genre=Genre;
         this.Actors=Actors;
         this.Plot=Plot;
+        this.Awards=Awards;
     }
 
     public String getDirector() {
@@ -54,6 +57,10 @@ public class Film {
 
     public String getTime() {
         return Runtime;
+    }
+
+    public String getAwards(){
+        return Awards;
     }
 
     public String getYear() {

@@ -111,7 +111,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
             if(film.getTime()!=null){
                 timeTextView.setText(film.getTime());
             } else {
-                timeTextView.setText("Nie znaleziono");
+                timeTextView.setText("Not found");
             }
 
             String firstDirector ="";
@@ -149,7 +149,7 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
 
                 directorTextView.setText(firstDirector);
             } else {
-                directorTextView.setText("Nie znaleziono");
+                directorTextView.setText("Not found");
             }
     }
 }}

@@ -66,7 +66,7 @@ public class FilmInfo extends AppCompatActivity {
                 directorTextView.setText(response.body().getDirector().toString());
                 writerTextView.setText(response.body().getWriter().toString());
                 genreTextView.setText(response.body().getGenre().toString());
-                yearTextView.setText(response.body().getYear().toString());
+                yearTextView.setText(response.body().getAwards().toString());
                 actorsTextView.setText(response.body().getActors().toString());
                 plotTextView.setText(response.body().getPlot().toString());
                 productionTextView.setText(response.body().getReleased().toString());
