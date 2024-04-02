@@ -7,9 +7,9 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <string name="menu_home">Filmy</string>
-    <string name="menu_gallery">Seriale</string>
-    <string name="menu_slideshow">Ulubione</string>
-    <string name="menu_series">Do obejrzenia</string>
+    <string name="menu_home">Films</string>
+    <string name="menu_gallery">Series</string>
+    <string name="menu_slideshow">Favourite</string>
+    <string name="menu_series">To watch</string>
     <string name="line">----------------------------------------------------------------------------------------------------------------------------------------------------------</string>
 </resources>

@@ -1,6 +1,8 @@
 package com.example.moviemingle.ui.series;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -49,6 +52,9 @@ public class SeriesFragment extends Fragment {
 
     private ImageView search;
 
+
+    private  SharedPreferences sharedPref;
+
     String[] seriale = {
             "The+Wire","Mad+Men", "Breaking+Bad","Fleabag","Game+of+Thrones","I+May+Destroy+You","The+Leftovers","The+Americans","Succession", "BoJack+Horseman",
             "Six+Feet+Under","Twin+Peaks", "Atlanta","Chernobyl","The+Crown", "30+Rock","Deadwood", "Lost", "The+Thick+of+It","Curb+Your+Enthusiasm", "Black+Mirror",
@@ -68,6 +74,7 @@ public class SeriesFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = inflater.inflate(R.layout.fragment_series, container, false);
+        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         recyclerView = root.findViewById(R.id.bestSeries);
         serialList = new ArrayList<>();
         finder = root.findViewById(R.id.finder);
@@ -191,6 +198,7 @@ public class SeriesFragment extends Fragment {
 
     private void updateRecyclerView() {
         adapter = new FilmAdapter(serialList);
+        adapter.setAddable(true);
         adapter.setOnPosterClickListener(new FilmAdapter.OnPosterClickListener() {
             @Override
             public void onPosterClick(int position) {
@@ -210,6 +218,33 @@ public class SeriesFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        adapter.setOnWatchClickListener(new FilmAdapter.OnWatchClickListener() {
+            @Override
+            public void onToWatchClick(int position,boolean isAddable) {
+                if (isAddable) {
+                    Film clickedFilm = serialList.get(position);
+                    adapter.addToWatchList(clickedFilm.getTitle().toString());
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putStringSet("toWatchList", adapter.getWatchList());
+                    editor.apply();
+                    Toast.makeText(getContext(), "Added "+clickedFilm.getTitle().toString() +" to watch", Toast.LENGTH_SHORT).show();
+                }}
+        });
+
+        adapter.setOnFavouriteClickListener(new FilmAdapter.OnFavouriteClickListener() {
+            @Override
+            public void onFavouriteClick(int position, boolean isAddable) {
+                if (isAddable){
+                    Film clickedFilm = serialList.get(position);
+                    adapter.addFavouriteList(clickedFilm.getTitle().toString());
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putStringSet("favouriteList", adapter.getFavouriteList());
+                    editor.apply();
+                    Toast.makeText(getContext(), "Added "+clickedFilm.getTitle().toString() +" to favourite list", Toast.LENGTH_SHORT).show();
+                }}
+        });
+
         recyclerView.setAdapter(adapter);
     }
 

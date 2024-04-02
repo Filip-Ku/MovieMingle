@@ -1,7 +1,6 @@
 package com.example.moviemingle.ui;
 
 import android.annotation.SuppressLint;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.moviemingle.R;
-import com.example.moviemingle.ui.home.HomeFragment;
 import com.squareup.picasso.Picasso;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
     private List<Film> films;
@@ -26,6 +26,16 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
     private OnPosterClickListener onPosterClickListener;
 
     private OnItemClickListener onItemClickListener;
+
+    private OnWatchClickListener onWatchClickListener;
+
+    private OnFavouriteClickListener onFavouriteClickListener;
+
+    private boolean isAddable;
+
+    private Set<String> toWatchList = new HashSet<>();
+
+    private Set<String> favouriteList = new HashSet<>();
 
     @NonNull
     @Override
@@ -38,23 +48,74 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         this.onPosterClickListener = listener;
     }
 
+    public void setOnFavouriteClickListener(OnFavouriteClickListener listener){
+        this.onFavouriteClickListener = listener;
+    }
+
+    public void setAddable(boolean isAddable){
+        this.isAddable=isAddable;
+    }
+
     public void setOnItemClickListener(OnItemClickListener listener) {
         this.onItemClickListener = listener;
+    }
+
+    public void setOnWatchClickListener(OnWatchClickListener listener){
+        this.onWatchClickListener=listener;
     }
 
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
 
+    public interface OnFavouriteClickListener {
+        void onFavouriteClick(int position,boolean isAddable);
+    }
+
+    public interface OnWatchClickListener {
+        void onToWatchClick(int position,boolean isAddable);
+    }
+
     public interface OnPosterClickListener {
         void onPosterClick(int position);
     }
 
+    public void addToWatchList(String title){
+        toWatchList.add(title);
+    }
+
+    public void removeFromToWatchList(String title){
+        toWatchList.remove(title);
+    }
+
+    public Set<String> getWatchList(){
+        return toWatchList;
+    }
+
+    public void addFavouriteList(String title){
+        favouriteList.add(title);
+    }
+
+    public void removeFromFavouriteList(String title){
+        favouriteList.remove(title);
+    }
+
+    public Set<String> getFavouriteList(){
+        return favouriteList;
+    }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {
         Film film = films.get(position);
         holder.bind(film);
+
+        if (isAddable) {
+            holder.toWatch.setImageResource(R.drawable.tv);
+            holder.favourite.setImageResource(R.drawable.ic_favourite);
+        } else {
+            holder.toWatch.setImageResource(android.R.drawable.ic_delete);
+            holder.favourite.setVisibility(View.GONE);
+        }
 
         holder.posterImageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +133,21 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
             }
         });
 
+        holder.toWatch.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                onWatchClickListener.onToWatchClick(position,isAddable);
+            }
+        });
+
+        if(holder.favourite.getVisibility()== View.VISIBLE) {
+        holder.favourite.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                onFavouriteClickListener.onFavouriteClick(position,isAddable);
+            }
+        });
+        }
     }
 
     public void onPosterClick(int position) {
@@ -91,12 +167,15 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         public TextView yearTextView;
         public TextView directorTextView;
         public TextView timeTextView;
+        public ImageView toWatch;
 
-
+        public ImageView favourite;
         public ImageView posterImageView;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            toWatch = itemView.findViewById(R.id.toWatch);
+            favourite = itemView.findViewById(R.id.favourite);
             posterImageView = itemView.findViewById(R.id.poster);
             titleTextView = itemView.findViewById(R.id.title);
             yearTextView = itemView.findViewById(R.id.year);

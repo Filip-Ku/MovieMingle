@@ -1,7 +1,9 @@
 package com.example.moviemingle.ui.home;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -49,7 +52,7 @@ public class HomeFragment extends Fragment {
 
     private ImageView search;
 
-
+    private  SharedPreferences sharedPref;
 
     String[] filmy = {"The+Shawshank+Redemption", "The+Godfather", "The+Dark+Knight", "12+Angry+Men", "Schindler's+List", "The+Lord+of+the+Rings:+The+Return+of+the+King",
             "Pulp+Fiction", "The+Good,+the+Bad+and+the+Ugly", "Fight+Club", "Forrest+Gump", "Inception", "The+Lord+of+the+Rings:+The+Fellowship+of+the+Ring",
@@ -71,6 +74,7 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
         recyclerView = root.findViewById(R.id.bestFilms);
         finder = root.findViewById(R.id.finder);
         filmList = new ArrayList<>();
@@ -199,6 +203,7 @@ public class HomeFragment extends Fragment {
 
     private void updateRecyclerView() {
         adapter = new FilmAdapter(filmList);
+        adapter.setAddable(true);
 
         adapter.setOnPosterClickListener(new FilmAdapter.OnPosterClickListener() {
             @Override
@@ -218,6 +223,33 @@ public class HomeFragment extends Fragment {
                 intent.putExtra("filmInfo", clickedFilm.getTitle());
                 startActivity(intent);
             }
+        });
+
+        adapter.setOnWatchClickListener(new FilmAdapter.OnWatchClickListener() {
+            @Override
+            public void onToWatchClick(int position,boolean isAddable) {
+                if (isAddable) {
+                Film clickedFilm = filmList.get(position);
+                adapter.addToWatchList(clickedFilm.getTitle().toString());
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.remove("toWatchList");
+                editor.putStringSet("toWatchList", adapter.getWatchList());
+                editor.apply();
+                Toast.makeText(getContext(), "Added "+clickedFilm.getTitle().toString() +" to watch", Toast.LENGTH_SHORT).show();
+            }}
+        });
+
+        adapter.setOnFavouriteClickListener(new FilmAdapter.OnFavouriteClickListener() {
+            @Override
+            public void onFavouriteClick(int position, boolean isAddable) {
+                if (isAddable){
+                    Film clickedFilm = filmList.get(position);
+                    adapter.addFavouriteList(clickedFilm.getTitle().toString());
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putStringSet("favouriteList", adapter.getFavouriteList());
+                    editor.apply();
+                    Toast.makeText(getContext(), "Added "+clickedFilm.getTitle().toString() +" to favourite list", Toast.LENGTH_SHORT).show();
+                }}
         });
 
         recyclerView.setAdapter(adapter);
