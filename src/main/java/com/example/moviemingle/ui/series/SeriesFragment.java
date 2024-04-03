@@ -1,5 +1,7 @@
 package com.example.moviemingle.ui.series;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -55,6 +57,10 @@ public class SeriesFragment extends Fragment {
 
     private  SharedPreferences sharedPref;
 
+    private Set<String> Titles = new HashSet<>();
+
+    private Set<String> favouriteTitles = new HashSet<>();
+
     String[] seriale = {
             "The+Wire","Mad+Men", "Breaking+Bad","Fleabag","Game+of+Thrones","I+May+Destroy+You","The+Leftovers","The+Americans","Succession", "BoJack+Horseman",
             "Six+Feet+Under","Twin+Peaks", "Atlanta","Chernobyl","The+Crown", "30+Rock","Deadwood", "Lost", "The+Thick+of+It","Curb+Your+Enthusiasm", "Black+Mirror",
@@ -74,7 +80,7 @@ public class SeriesFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = inflater.inflate(R.layout.fragment_series, container, false);
-        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getContext().getSharedPreferences("MySharedPref",MODE_PRIVATE);
         recyclerView = root.findViewById(R.id.bestSeries);
         serialList = new ArrayList<>();
         finder = root.findViewById(R.id.finder);
@@ -86,8 +92,17 @@ public class SeriesFragment extends Fragment {
             }
         });
         loadSeries();
-
+        loadToWatch();
+        loadFavourite();
         return root;
+    }
+
+    private void loadToWatch(){
+        Titles = sharedPref.getStringSet("toWatchList", new HashSet<>());
+    }
+
+    private void loadFavourite(){
+        favouriteTitles = sharedPref.getStringSet("favouriteList", new HashSet<>());
     }
 
     private void searchSeries() {
@@ -224,11 +239,13 @@ public class SeriesFragment extends Fragment {
             public void onToWatchClick(int position,boolean isAddable) {
                 if (isAddable) {
                     Film clickedFilm = serialList.get(position);
-                    adapter.addToWatchList(clickedFilm.getTitle().toString());
+                    Titles.add(clickedFilm.getTitle());
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putStringSet("toWatchList", adapter.getWatchList());
+                    editor.remove("toWatchList");
                     editor.apply();
-                    Toast.makeText(getContext(), "Added "+clickedFilm.getTitle().toString() +" to watch", Toast.LENGTH_SHORT).show();
+                    editor.putStringSet("toWatchList", Titles);
+                    editor.commit();
+                    Toast.makeText(getContext(), "Added "+clickedFilm.getTitle()+" to watch.", Toast.LENGTH_SHORT).show();
                 }}
         });
 
@@ -237,11 +254,13 @@ public class SeriesFragment extends Fragment {
             public void onFavouriteClick(int position, boolean isAddable) {
                 if (isAddable){
                     Film clickedFilm = serialList.get(position);
-                    adapter.addFavouriteList(clickedFilm.getTitle().toString());
+                    favouriteTitles.add(clickedFilm.getTitle());
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putStringSet("favouriteList", adapter.getFavouriteList());
+                    editor.remove("favouriteList");
                     editor.apply();
-                    Toast.makeText(getContext(), "Added "+clickedFilm.getTitle().toString() +" to favourite list", Toast.LENGTH_SHORT).show();
+                    editor.putStringSet("favouriteList", favouriteTitles);
+                    editor.commit();
+                    Toast.makeText(getContext(), "Added "+clickedFilm.getTitle()+" to favourite list.", Toast.LENGTH_SHORT).show();
                 }}
         });
 
@@ -251,10 +270,6 @@ public class SeriesFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (adapter != null) {
-            adapter = null;
-        }
-
         if (wylosowaneTytuly != null) {
             wylosowaneTytuly.clear();
         }

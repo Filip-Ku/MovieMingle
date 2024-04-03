@@ -1,6 +1,8 @@
 package com.example.moviemingle.ui.home;
 
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -52,7 +54,11 @@ public class HomeFragment extends Fragment {
 
     private ImageView search;
 
-    private  SharedPreferences sharedPref;
+    private SharedPreferences sharedPref;
+
+    private Set<String> Titles = new HashSet<>();
+
+    private Set<String> favouriteTitles = new HashSet<>();
 
     String[] filmy = {"The+Shawshank+Redemption", "The+Godfather", "The+Dark+Knight", "12+Angry+Men", "Schindler's+List", "The+Lord+of+the+Rings:+The+Return+of+the+King",
             "Pulp+Fiction", "The+Good,+the+Bad+and+the+Ugly", "Fight+Club", "Forrest+Gump", "Inception", "The+Lord+of+the+Rings:+The+Fellowship+of+the+Ring",
@@ -74,7 +80,7 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getContext().getSharedPreferences("MySharedPref",MODE_PRIVATE);
         recyclerView = root.findViewById(R.id.bestFilms);
         finder = root.findViewById(R.id.finder);
         filmList = new ArrayList<>();
@@ -85,9 +91,20 @@ public class HomeFragment extends Fragment {
                 searchProduction();
             }
         });
+        loadToWatch();
+        loadFavourites();
         loadFilms();
 
         return root;
+    }
+
+    private void loadToWatch(){
+        Titles = sharedPref.getStringSet("toWatchList", new HashSet<>());
+    }
+
+    private void loadFavourites(){
+        favouriteTitles = sharedPref.getStringSet("favouriteList", new HashSet<>());
+        Log.d("Shared","gotten Titles: " + Titles.toString());
     }
 
     private void searchProduction() {
@@ -227,16 +244,18 @@ public class HomeFragment extends Fragment {
 
         adapter.setOnWatchClickListener(new FilmAdapter.OnWatchClickListener() {
             @Override
-            public void onToWatchClick(int position,boolean isAddable) {
+            public void onToWatchClick(int position, boolean isAddable) {
                 if (isAddable) {
-                Film clickedFilm = filmList.get(position);
-                adapter.addToWatchList(clickedFilm.getTitle().toString());
-                SharedPreferences.Editor editor = sharedPref.edit();
-                editor.remove("toWatchList");
-                editor.putStringSet("toWatchList", adapter.getWatchList());
-                editor.apply();
-                Toast.makeText(getContext(), "Added "+clickedFilm.getTitle().toString() +" to watch", Toast.LENGTH_SHORT).show();
-            }}
+                    Film clickedFilm = filmList.get(position);
+                    Titles.add(clickedFilm.getTitle());
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.remove("toWatchList");
+                    editor.apply();
+                    editor.putStringSet("toWatchList", Titles);
+                    editor.commit();
+                    Toast.makeText(getContext(), "Added "+clickedFilm.getTitle()+" to watch.", Toast.LENGTH_SHORT).show();
+                }
+            }
         });
 
         adapter.setOnFavouriteClickListener(new FilmAdapter.OnFavouriteClickListener() {
@@ -244,11 +263,13 @@ public class HomeFragment extends Fragment {
             public void onFavouriteClick(int position, boolean isAddable) {
                 if (isAddable){
                     Film clickedFilm = filmList.get(position);
-                    adapter.addFavouriteList(clickedFilm.getTitle().toString());
+                    favouriteTitles.add(clickedFilm.getTitle());
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putStringSet("favouriteList", adapter.getFavouriteList());
+                    editor.remove("favouriteList");
                     editor.apply();
-                    Toast.makeText(getContext(), "Added "+clickedFilm.getTitle().toString() +" to favourite list", Toast.LENGTH_SHORT).show();
+                    editor.putStringSet("favouriteList", favouriteTitles);
+                    editor.commit();
+                    Toast.makeText(getContext(), "Added "+clickedFilm.getTitle()+" to favourite list.", Toast.LENGTH_SHORT).show();
                 }}
         });
 
@@ -258,10 +279,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (adapter != null) {
-            adapter = null;
-        }
-
         if (wylosowaneTytuly != null) {
             wylosowaneTytuly.clear();
         }
