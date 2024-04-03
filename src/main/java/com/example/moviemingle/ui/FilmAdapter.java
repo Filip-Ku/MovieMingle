@@ -1,6 +1,8 @@
 package com.example.moviemingle.ui;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,11 +33,13 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
 
     private OnFavouriteClickListener onFavouriteClickListener;
 
+
+    public FilmAdapter(List<Film> films, Context context) {
+        this.films = films;
+    }
+
     private boolean isAddable;
 
-    private Set<String> toWatchList = new HashSet<>();
-
-    private Set<String> favouriteList = new HashSet<>();
 
     @NonNull
     @Override
@@ -80,29 +84,6 @@ public class FilmAdapter extends RecyclerView.Adapter<FilmAdapter.ViewHolder> {
         void onPosterClick(int position);
     }
 
-    public void addToWatchList(String title){
-        toWatchList.add(title);
-    }
-
-    public void removeFromToWatchList(String title){
-        toWatchList.remove(title);
-    }
-
-    public Set<String> getWatchList(){
-        return toWatchList;
-    }
-
-    public void addFavouriteList(String title){
-        favouriteList.add(title);
-    }
-
-    public void removeFromFavouriteList(String title){
-        favouriteList.remove(title);
-    }
-
-    public Set<String> getFavouriteList(){
-        return favouriteList;
-    }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, @SuppressLint("RecyclerView") int position) {

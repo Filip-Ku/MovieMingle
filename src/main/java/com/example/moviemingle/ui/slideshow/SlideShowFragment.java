@@ -39,17 +39,17 @@ public class SlideShowFragment extends Fragment {
 
     private RecyclerView recyclerView;
 
-
     private List<Film> filmList;
 
     private FilmAdapter adapter;
 
     private SharedPreferences sharedPref;
 
+    Set<String> Titles = new HashSet<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getActivity().getSharedPreferences("MySharedPref",Context.MODE_PRIVATE);
         View root = inflater.inflate(R.layout.fragment_slideshow, container, false);
         recyclerView = root.findViewById(R.id.favouriteFilms);
         recyclerView.setAdapter(new FilmAdapter(new ArrayList<>()));
@@ -59,7 +59,6 @@ public class SlideShowFragment extends Fragment {
         return root;
     }
     private void loadFilms() {
-        Set<String> Titles = new HashSet<>();
         Titles = sharedPref.getStringSet("favouriteList",new HashSet<>());
         for (String tytul : Titles) {
             Retrofit retrofit = new Retrofit.Builder()
@@ -117,11 +116,8 @@ public class SlideShowFragment extends Fragment {
             public void onToWatchClick(int position, boolean isAddable) {
                 if (!isAddable){
                     Film clickedFilm = filmList.get(position);
-                    adapter.removeFromFavouriteList(clickedFilm.getTitle().toString());
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putStringSet("favouriteList", adapter.getFavouriteList());
-                    editor.apply();
-                    Toast.makeText(getContext(), "Removed "+clickedFilm.getTitle().toString() +" from to favourite list", Toast.LENGTH_SHORT).show();
+                    Titles.remove(clickedFilm.getTitle());
+                    saveTitlesState(clickedFilm);
                     filmList.remove(position);
                     adapter.notifyDataSetChanged();
                 }}
@@ -130,6 +126,14 @@ public class SlideShowFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
+    private void saveTitlesState(Film clickedFilm) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.remove("favouriteList");
+        editor.apply();
+        editor.putStringSet("favouriteList", Titles);
+        editor.commit();
+        Toast.makeText(getContext(), "Removed "+ clickedFilm.getTitle()+" from favourite list.", Toast.LENGTH_SHORT).show();
+    }
 
     @Override
     public void onDestroyView() {

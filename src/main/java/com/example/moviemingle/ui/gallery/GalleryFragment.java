@@ -41,9 +41,11 @@ public class GalleryFragment extends Fragment {
     private FilmAdapter adapter;
     private SharedPreferences sharedPref;
 
+    Set<String> Titles = new HashSet<>();
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        sharedPref = getActivity().getPreferences(Context.MODE_PRIVATE);
+        sharedPref = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
         View root = inflater.inflate(R.layout.fragment_gallery, container, false);
         recyclerView = root.findViewById(R.id.toWatchFilms);
         recyclerView.setAdapter(new FilmAdapter(new ArrayList<>()));
@@ -54,7 +56,7 @@ public class GalleryFragment extends Fragment {
     }
 
     private void loadFilms() {
-        Set<String> Titles = sharedPref.getStringSet("toWatchList", new HashSet<>());
+        Titles = sharedPref.getStringSet("toWatchList", new HashSet<>());
         for (String tytul : Titles) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://www.omdbapi.com/")
@@ -112,17 +114,24 @@ public class GalleryFragment extends Fragment {
             public void onToWatchClick(int position, boolean isAddable) {
                 if (!isAddable){
                     Film clickedFilm = filmList.get(position);
-                    adapter.removeFromToWatchList(clickedFilm.getTitle().toString());
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putStringSet("favouriteList", adapter.getWatchList());
-                    editor.apply();
-                    Toast.makeText(getContext(), "Removed "+clickedFilm.getTitle().toString() +" from to favourite list", Toast.LENGTH_SHORT).show();
+                    Titles.remove(clickedFilm.getTitle());
+                    saveTitlesState(clickedFilm);
                     filmList.remove(position);
                     adapter.notifyDataSetChanged();
-                }}
+                }
+            }
         });
 
         recyclerView.setAdapter(adapter);
+    }
+
+    private void saveTitlesState(Film clickedFilm) {
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.remove("toWatchList");
+        editor.apply();
+        editor.putStringSet("toWatchList", Titles);
+        editor.commit();
+        Toast.makeText(getContext(), "Removed "+ clickedFilm.getTitle()+" from to watch list.", Toast.LENGTH_SHORT).show();
     }
 
 
