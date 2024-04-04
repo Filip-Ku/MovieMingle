@@ -19,6 +19,7 @@ import com.example.moviemingle.databinding.FragmentHomeBinding;
 import com.example.moviemingle.ui.Film;
 import com.example.moviemingle.ui.FilmAdapter;
 import com.example.moviemingle.ui.FilmInfo;
+import com.example.moviemingle.ui.InternetConnectionChecker;
 import com.example.moviemingle.ui.JsonPlaceholderAPI;
 import com.example.moviemingle.ui.Poster;
 
@@ -47,6 +48,8 @@ public class SlideShowFragment extends Fragment {
 
     Set<String> Titles = new HashSet<>();
 
+    private InternetConnectionChecker internetConnectionChecker;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         sharedPref = getActivity().getSharedPreferences("MySharedPref",Context.MODE_PRIVATE);
@@ -60,6 +63,7 @@ public class SlideShowFragment extends Fragment {
     }
     private void loadFilms() {
         Titles = sharedPref.getStringSet("favouriteList",new HashSet<>());
+        if(internetConnectionChecker.isInternetAvailable(getContext())){
         for (String tytul : Titles) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://www.omdbapi.com/")
@@ -85,8 +89,11 @@ public class SlideShowFragment extends Fragment {
                     Log.e("Slideshow", "Error: " + t.getMessage());
                 }
             });
+        }} else{
+            Toast.makeText(getContext(), "Brak dostępu do internetu.", Toast.LENGTH_SHORT).show();
         }
     }
+
     private void updateRecyclerView() {
         adapter = new FilmAdapter(filmList);
         adapter.setAddable(false);
@@ -104,12 +111,15 @@ public class SlideShowFragment extends Fragment {
         adapter.setOnItemClickListener(new FilmAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
+                if(internetConnectionChecker.isInternetAvailable(getContext())){
                 Film clickedFilm = filmList.get(position);
                 Intent intent = new Intent(getContext(), FilmInfo.class);
                 intent.putExtra("filmInfo", clickedFilm.getTitle());
                 startActivity(intent);
+            } else{
+                Toast.makeText(getContext(), "Brak dostępu do internetu.", Toast.LENGTH_SHORT).show();
             }
-        });
+        }});
 
         adapter.setOnWatchClickListener(new FilmAdapter.OnWatchClickListener() {
             @Override

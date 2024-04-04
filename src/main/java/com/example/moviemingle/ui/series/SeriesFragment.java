@@ -25,6 +25,7 @@ import com.example.moviemingle.databinding.FragmentHomeBinding;
 import com.example.moviemingle.ui.Film;
 import com.example.moviemingle.ui.FilmAdapter;
 import com.example.moviemingle.ui.FilmInfo;
+import com.example.moviemingle.ui.InternetConnectionChecker;
 import com.example.moviemingle.ui.JsonPlaceholderAPI;
 import com.example.moviemingle.ui.Poster;
 import com.example.moviemingle.ui.SearchResult;
@@ -75,6 +76,8 @@ public class SeriesFragment extends Fragment {
     };
     Set<String> wylosowaneTytuly = new HashSet<>();
 
+    private InternetConnectionChecker internetConnectionChecker;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -109,6 +112,7 @@ public class SeriesFragment extends Fragment {
         String phrase;
         serialList.clear();
         phrase = finder.getText().toString();
+        if(internetConnectionChecker.isInternetAvailable(getContext())){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://www.omdbapi.com/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -140,9 +144,13 @@ public class SeriesFragment extends Fragment {
                 Log.e("HomeFragment", "Error: " + t.getMessage());
             }
         });
+    }else{
+            Toast.makeText(getContext(), "Brak dostępu do internetu.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void searchExactInfoSeries(String tytul) {
+        if(internetConnectionChecker.isInternetAvailable(getContext())){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://www.omdbapi.com/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -169,7 +177,9 @@ public class SeriesFragment extends Fragment {
             public void onFailure(Call<Film> call, Throwable t) {
                 Log.e("HomeFragment", "Error: " + t.getMessage());
             }
-        });
+        });}else{
+        Toast.makeText(getContext(), "Brak dostępu do internetu.", Toast.LENGTH_SHORT).show();
+    }
     }
 
     private void loadSeries() {
@@ -179,7 +189,7 @@ public class SeriesFragment extends Fragment {
             int index = rand.nextInt(seriale.length);
             wylosowaneTytuly.add(seriale[index]);
         }
-
+        if(internetConnectionChecker.isInternetAvailable(getContext())){
         for (String tytul : wylosowaneTytuly) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://www.omdbapi.com/")
@@ -208,6 +218,8 @@ public class SeriesFragment extends Fragment {
                     Log.e("HomeFragment", "Error: " + t.getMessage());
                 }
             });
+        }}else{
+            Toast.makeText(getContext(), "Brak dostępu do internetu.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -227,10 +239,14 @@ public class SeriesFragment extends Fragment {
         adapter.setOnItemClickListener(new FilmAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Film clickedFilm = serialList.get(position);
-                Intent intent = new Intent(getContext(), FilmInfo.class);
-                intent.putExtra("filmInfo", clickedFilm.getTitle());
-                startActivity(intent);
+                if(internetConnectionChecker.isInternetAvailable(getContext())){
+                    Film clickedFilm = serialList.get(position);
+                    Intent intent = new Intent(getContext(), FilmInfo.class);
+                    intent.putExtra("filmInfo", clickedFilm.getTitle());
+                    startActivity(intent);
+                } else{
+                    Toast.makeText(getContext(), "Brak dostępu do internetu.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

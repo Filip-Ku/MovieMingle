@@ -1,9 +1,12 @@
 package com.example.moviemingle.ui;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,9 +37,21 @@ public class FilmInfo extends AppCompatActivity {
    private TextView productionTextView;
 
    private ImageView posterImageView;
+
+   private RatingBar MyRating;
+   private RatingBar usersRating;
+
+   private TextView userMark;
+
+   private SharedPreferences sharedPreferences;
+
+   private TextView yourMark;
+
+   private Float yourMarkF;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.filminfo_layout);
         titleTextView = findViewById(R.id.titleTextView);
         runtimeTextView = findViewById(R.id.runtimeTextView);
@@ -48,8 +63,16 @@ public class FilmInfo extends AppCompatActivity {
         plotTextView = findViewById(R.id.plotTextView);
         productionTextView = findViewById(R.id.productionTextView);
         posterImageView = findViewById(R.id.posterImageView);
+        MyRating = findViewById(R.id.MyRating);
+        usersRating = findViewById(R.id.usersRating);
+        userMark = findViewById(R.id.userMark);
+        yourMark=findViewById(R.id.yourMark);
+
         getSupportActionBar().hide();
         title = getIntent().getStringExtra("filmInfo");
+        sharedPreferences = this.getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+        yourMarkF=sharedPreferences.getFloat(title, 0.0f);
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://www.omdbapi.com/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -70,6 +93,11 @@ public class FilmInfo extends AppCompatActivity {
                 actorsTextView.setText(response.body().getActors().toString());
                 plotTextView.setText(response.body().getPlot().toString());
                 productionTextView.setText(response.body().getReleased().toString());
+                convertPercent(response.body().getRottenTomatoesRating());
+                if(yourMarkF!=null){
+                    yourMark.setText("Twoja ocena: " + yourMarkF.toString());
+                    MyRating.setRating(yourMarkF);
+                }
                 if(response.body().getPoster().equals("N/A")) {
                     Picasso.get().load("https://i.imgur.com/zYUBMnP.png").into(posterImageView);
                 } else {
@@ -84,6 +112,19 @@ public class FilmInfo extends AppCompatActivity {
         });
     }
 
+    public void convertPercent(String percent) {
+        if(percent!=null) {
+            String cleanedPercent = percent.replaceAll("[^0-9]", "");
+            double percentValue = Double.parseDouble(cleanedPercent);
+            double rating = (percentValue / 100) * 4.5 + 0.5;
+            usersRating.setRating((float) rating);
+            String formattedRating = String.format("%.2f", rating);
+            userMark.setText("Ocena użytkowników: " + formattedRating);
+        } else {
+            userMark.setText("Brak ocen użytkowników");
+        }
+    }
+
     public void turnOff(View view) {
         finish();
     }
@@ -91,6 +132,14 @@ public class FilmInfo extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        yourMarkF=MyRating.getRating();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(title);
+        editor.apply();
+        if(yourMarkF!=null) {
+            editor.putFloat(title, yourMarkF);
+            editor.commit();
+        }
         title="";
     }
 }

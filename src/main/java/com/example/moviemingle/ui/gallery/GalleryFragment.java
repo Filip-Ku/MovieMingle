@@ -18,6 +18,7 @@ import com.example.moviemingle.R;
 import com.example.moviemingle.ui.Film;
 import com.example.moviemingle.ui.FilmAdapter;
 import com.example.moviemingle.ui.FilmInfo;
+import com.example.moviemingle.ui.InternetConnectionChecker;
 import com.example.moviemingle.ui.JsonPlaceholderAPI;
 import com.example.moviemingle.ui.Poster;
 import com.example.moviemingle.databinding.FragmentGalleryBinding;
@@ -43,6 +44,8 @@ public class GalleryFragment extends Fragment {
 
     Set<String> Titles = new HashSet<>();
 
+    private InternetConnectionChecker internetConnectionChecker;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         sharedPref = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
@@ -57,6 +60,7 @@ public class GalleryFragment extends Fragment {
 
     private void loadFilms() {
         Titles = sharedPref.getStringSet("toWatchList", new HashSet<>());
+        if(internetConnectionChecker.isInternetAvailable(getContext())){
         for (String tytul : Titles) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://www.omdbapi.com/")
@@ -82,6 +86,8 @@ public class GalleryFragment extends Fragment {
                     Log.e("Gallery", "Error: " + t.getMessage());
                 }
             });
+        }} else{
+            Toast.makeText(getContext(), "Brak dostępu do internetu.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -102,10 +108,14 @@ public class GalleryFragment extends Fragment {
         adapter.setOnItemClickListener(new FilmAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
+                if(internetConnectionChecker.isInternetAvailable(getContext())){
                 Film clickedFilm = filmList.get(position);
                 Intent intent = new Intent(getContext(), FilmInfo.class);
                 intent.putExtra("filmInfo", clickedFilm.getTitle());
                 startActivity(intent);
+            } else{
+                Toast.makeText(getContext(), "Brak dostępu do internetu.", Toast.LENGTH_SHORT).show();
+            }
             }
         });
 

@@ -32,7 +32,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="460dp"
+        android:layout_height="600dp"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@+id/posterImageView"
         app:layout_constraintEnd_toEndOf="parent"
@@ -253,6 +253,66 @@
             tools:layout_editor_absoluteY="297dp"
             android:layout_marginLeft="41dp"/>
     </LinearLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <RatingBar
+                    android:id="@+id/MyRating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:scaleX="0.5"
+                    android:scaleY="0.5"
+                    android:stepSize="0.5"
+                    android:layout_marginLeft="-35dp"/>
+
+                <RatingBar
+                    android:id="@+id/usersRating"
+                    android:layout_width="240dp"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="0.5"
+                    android:isIndicator="true"
+                    android:scaleX="0.5"
+                    android:scaleY="0.5"
+                    android:layout_marginLeft="-35dp"/>
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp">
+                <TextView
+                    android:id="@+id/yourMark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12dp"
+                    android:textColor="@color/white"
+                    android:text="Twoja Ocena"
+                    android:fontFamily="@font/interbold"
+                    android:layout_marginLeft="30dp"/>
+
+                <TextView
+                    android:id="@+id/userMark"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="80dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/interbold"
+                    android:text="Ocena użytkowników"
+                    android:textColor="@color/white"
+                    android:textSize="12dp" />
+            </LinearLayout>
+
+        </RelativeLayout>
+
+
     </LinearLayout>
 
 
