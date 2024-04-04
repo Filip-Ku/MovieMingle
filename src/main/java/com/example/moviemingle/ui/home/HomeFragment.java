@@ -24,6 +24,7 @@ import com.example.moviemingle.R;
 import com.example.moviemingle.databinding.FragmentHomeBinding;
 import com.example.moviemingle.ui.Film;
 import com.example.moviemingle.ui.FilmAdapter;
+import com.example.moviemingle.ui.InternetConnectionChecker;
 import com.example.moviemingle.ui.JsonPlaceholderAPI;
 import com.example.moviemingle.ui.Poster;
 import com.example.moviemingle.ui.SearchResult;
@@ -75,6 +76,8 @@ public class HomeFragment extends Fragment {
             "The+Gold+Rush", "The+Maltese+Falcon", "The+Bridge+on+the+River+Kwai", "Rashomon", "The+Wizard+of+Oz", "The+Truman+Show", "Amadeus"};
     Set<String> wylosowaneTytuly = new HashSet<>();
 
+    private InternetConnectionChecker internetConnectionChecker;
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -104,13 +107,13 @@ public class HomeFragment extends Fragment {
 
     private void loadFavourites(){
         favouriteTitles = sharedPref.getStringSet("favouriteList", new HashSet<>());
-        Log.d("Shared","gotten Titles: " + Titles.toString());
     }
 
     private void searchProduction() {
         String phrase;
         filmList.clear();
         phrase = finder.getText().toString();
+        if(internetConnectionChecker.isInternetAvailable(getContext())){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://www.omdbapi.com/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -143,10 +146,13 @@ public class HomeFragment extends Fragment {
                 Log.e("HomeFragment", "Error: " + t.getMessage());
             }
         });
+        } else{
+            Toast.makeText(getContext(), "Brak dostępu do internetu.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void searchExactInfo(String tytul) {
-
+        if(internetConnectionChecker.isInternetAvailable(getContext())){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("http://www.omdbapi.com/")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -174,7 +180,9 @@ public class HomeFragment extends Fragment {
             }
 
 
-        });
+        });}else{
+            Toast.makeText(getContext(), "Brak dostępu do internetu.", Toast.LENGTH_SHORT).show();
+        }
     }
 
 
@@ -186,7 +194,7 @@ public class HomeFragment extends Fragment {
             int index = rand.nextInt(filmy.length);
             wylosowaneTytuly.add(filmy[index]);
         }
-
+        if(internetConnectionChecker.isInternetAvailable(getContext())){
         for (String tytul : wylosowaneTytuly) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("http://www.omdbapi.com/")
@@ -215,6 +223,8 @@ public class HomeFragment extends Fragment {
                     Log.e("HomeFragment", "Error: " + t.getMessage());
                 }
             });
+        }} else{
+            Toast.makeText(getContext(), "Brak dostępu do internetu.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -225,22 +235,28 @@ public class HomeFragment extends Fragment {
         adapter.setOnPosterClickListener(new FilmAdapter.OnPosterClickListener() {
             @Override
             public void onPosterClick(int position) {
-                Film clickedFilm = filmList.get(position);
-                Intent intent = new Intent(getContext(), Poster.class);
-                intent.putExtra("posterUrl", clickedFilm.getPoster());
-                startActivity(intent);
+
+                    Film clickedFilm = filmList.get(position);
+                    Intent intent = new Intent(getContext(), Poster.class);
+                    intent.putExtra("posterUrl", clickedFilm.getPoster());
+                    startActivity(intent);
             }
         });
+
 
         adapter.setOnItemClickListener(new FilmAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(int position) {
-                Film clickedFilm = filmList.get(position);
-                Intent intent = new Intent(getContext(), FilmInfo.class);
-                intent.putExtra("filmInfo", clickedFilm.getTitle());
-                startActivity(intent);
+                if (internetConnectionChecker.isInternetAvailable(getContext())) {
+                    Film clickedFilm = filmList.get(position);
+                    Intent intent = new Intent(getContext(), FilmInfo.class);
+                    intent.putExtra("filmInfo", clickedFilm.getTitle());
+                    startActivity(intent);
+            } else{
+                Toast.makeText(getContext(), "Brak dostępu do internetu.", Toast.LENGTH_SHORT).show();
             }
-        });
+            }});
+
 
         adapter.setOnWatchClickListener(new FilmAdapter.OnWatchClickListener() {
             @Override

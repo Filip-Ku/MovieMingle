@@ -1,5 +1,7 @@
 package com.example.moviemingle.ui;
 
+import java.util.List;
+
 public class Film {
     private String Title;
     private String Year;
@@ -20,6 +22,33 @@ public class Film {
 
     private String Awards;
 
+    private List<Rating> Ratings;
+
+    public List<Rating> getRatings() {
+        return Ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        Ratings = ratings;
+    }
+
+
+    private Film(String Title, String Year, String Time, String Director, String Response, String Poster, String Writer, String Released, String Genre, String Actors, String Plot,String Awards,List<Rating> Ratings){
+        this.Director=Director;
+        this.Runtime=Time;
+        this.Year=Year;
+        this.Title=Title;
+        this.Response=Response;
+        this.Poster=Poster;
+        this.Writer=Writer;
+        this.Released=Released;
+        this.Genre=Genre;
+        this.Actors=Actors;
+        this.Plot=Plot;
+        this.Awards=Awards;
+        this.Ratings=Ratings;
+    }
+
     public String getReleased() {
         return Released;
     }
@@ -34,21 +63,6 @@ public class Film {
 
     public String getPlot() {
         return Plot;
-    }
-
-    private Film(String Title, String Year, String Time, String Director, String Response, String Poster, String Writer, String Released, String Genre, String Actors, String Plot,String Awards){
-        this.Director=Director;
-        this.Runtime=Time;
-        this.Year=Year;
-        this.Title=Title;
-        this.Response=Response;
-        this.Poster=Poster;
-        this.Writer=Writer;
-        this.Released=Released;
-        this.Genre=Genre;
-        this.Actors=Actors;
-        this.Plot=Plot;
-        this.Awards=Awards;
     }
 
     public String getDirector() {
@@ -76,4 +90,39 @@ public class Film {
     public String getWriter(){return Writer;}
 
     public String getResponse(){return Response;}
+
+    public String getRottenTomatoesRating() {
+        for (Rating rating : Ratings) {
+            if ("Rotten Tomatoes".equals(rating.getSource())) {
+                return rating.getValue();
+            }
+        }
+        return null;
+    }
+}
+class Rating {
+    private String Source;
+    private String Value;
+
+    public Rating(String source, String value) {
+        this.Source = source;
+        this.Value = value;
+    }
+
+    public String getSource() {
+        return Source;
+    }
+
+    public String getValue() {
+        return Value;
+    }
+
+    public void setSource(String source) {
+        Source = source;
+    }
+
+    public void setValue(String value) {
+        Value = value;
+    }
+
 }
